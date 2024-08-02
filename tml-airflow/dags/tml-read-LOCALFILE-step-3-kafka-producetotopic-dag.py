@@ -11,7 +11,7 @@ default_args = {
   'enabletls': 1,
   'microserviceid' : '',
   'producerid' : 'iotsolution',  
-  'topics' : 'iot-raw-data', # *************** This is one of the topic you created in SYSTEM STEP 2
+  'raw_data_topic' : 'iot-raw-data', # *************** This is one of the topic you created in SYSTEM STEP 2
   'identifier' : 'TML solution',  
   'inputfile' : '/rawdata/?',  # <<< ***** replace ?  to input file name to read. NOTE this data file should be JSON messages per line and stored in the HOST folder mapped to /rawdata folder 
   'delay' : 7000, # << ******* 7000 millisecond maximum delay for VIPER to wait for Kafka to return confirmation message is received and written to topic
@@ -64,7 +64,7 @@ def startproducingtotopic():
       inputfile=basedir + args['inputfile']
 
       # MAin Kafka topic to store the real-time data
-      maintopic = args['topics']
+      maintopic = args['raw_data_topic']
       producerid = args['producerid']
     
       k=0

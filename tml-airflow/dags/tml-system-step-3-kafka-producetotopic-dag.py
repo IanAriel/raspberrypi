@@ -1,3 +1,4 @@
+import maadstml
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.operators.bash import BashOperator
@@ -11,8 +12,10 @@ default_args = {
   'enabletls': 1,
   'microserviceid' : '',
   'producerid' : 'iotsolution',  
-  'topics' : 'iot-raw-data', # *************** This is one of the topic you created in SYSTEM STEP 2
+  'raw_data_topic' : 'iot-raw-data', # *************** This is one of the topic you created in SYSTEM STEP 2
   'identifier' : 'TML solution',  
+  'delay' : 7000, # <<< ******** max network delay to wait for Kafka response in milliseconds  
+  'topicid' : -999, # <<< ******** do not modify      
   'inputfile' : '/rawdata/?',  # <<< ***** replace ?  to input file to read. NOTE this data file should JSON messages per line and stored in the HOST folder mapped to /rawdata folder 
   'start_date': datetime (2024, 6, 29),
   'retries': 1,
@@ -34,10 +37,10 @@ def startproducingtotopic():
   
   def producetokafka(value, tmlid, identifier,producerid,maintopic,substream,args):
      inputbuf=value     
-     topicid=-999
+     topicid=args['topicid']
   
      # Add a 7000 millisecond maximum delay for VIPER to wait for Kafka to return confirmation message is received and written to topic 
-     delay=7000
+     delay=args['delay']
      enabletls = args['enabletls']
      identifier = args['identifier']
 
@@ -62,11 +65,9 @@ def startproducingtotopic():
       inputfile=basedir + args['inputfile']
 
       # MAin Kafka topic to store the real-time data
-      maintopic = args['topics']
+      maintopic = args['raw_data_topic']
       producerid = args['producerid']
     
-      reader=csvlatlong(basedir + '/IotSolution/dsntmlidmain.csv')
- 
       k=0
 
       file1 = open(inputfile, 'r')
@@ -86,13 +87,9 @@ def startproducingtotopic():
             print("Read End:",datetime.datetime.now())
             continue
 
-          jsonline = json.loads(line)
-          lat,long,ident=getlatlong(reader,jsonline['metadata']['dsn'],'dsn')
-          line = line[:-2] + "," + '"lat":' + lat + ',"long":'+long + ',"identifier":"' + ident + '"}'
-
           producetokafka(line.strip(), "", "",producerid,maintopic,"",args)
           # change time to speed up or slow down data   
-          time.sleep(0.15)
+          #time.sleep(0.15)
         except Exception as e:
           print(e)  
           pass  
