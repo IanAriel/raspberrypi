@@ -19,7 +19,10 @@ default_args = {
   'brokerhost' : '',
   'brokerport' : -999,
   'microserviceid' : '',
-  'topics' : 'iot-raw-data,iot-preprocess-data,iot-preprocess2-data', # Separate multiple topics with comma
+  'raw_data_topic' : 'iot-raw-data', # Separate multiple topics with comma
+  'preprocess_data_topic' : 'iot-preprocess-data,iot-preprocess2-data', # Separate multiple topics with comma
+  'ml_data_topic' : '',
+  'prediction_data_topic' : '',  
   'description' : 'Topics to store iot data',  
   'start_date': datetime (2024, 6, 29),
   'retries': 1,
@@ -64,19 +67,21 @@ def startkafkasetup():
       #############################################################################################################
       #                         CREATE TOPIC TO STORE TRAINED PARAMS FROM ALGORITHM  
       
-      producetotopic=args['topics']
-      description=args['description']
-    
-      topicsarr = producetotopic.split(",")
-      
-      for topic in topicsarr:  
-        result=maadstml.vipercreatetopic(VIPERTOKEN,VIPERHOST,VIPERPORT,producetotopic,companyname,
+      keys = ['raw_data_topic','preprocess_data_topic','ml_data_topic','prediction_data_topic']  
+          
+      for k in keys:
+        producetotopic=args[k]
+        description=args['description']
+        topicsarr = producetotopic.split(",")
+        
+        for topic in topicsarr:  
+          result=maadstml.vipercreatetopic(VIPERTOKEN,VIPERHOST,VIPERPORT,producetotopic,companyname,
                                      myname,myemail,mylocation,description,enabletls,
                                      brokerhost,brokerport,numpartitions,replication,
                                      microserviceid='')
-        print("Result=",result)
+          print("Result=",result)
 
-      setupkafkatopic(default_args)
+  setupkafkatopic(default_args)
       
       
 dag = startkafkasetup()

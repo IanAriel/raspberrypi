@@ -12,6 +12,7 @@ default_args = {
   'microserviceid' : '',
   'producerid' : 'iotsolution',  
   'topics' : 'iot-raw-data', # *************** This is one of the topic you created in SYSTEM STEP 2
+  'preprocess_topic' : 'iot-preprocess', #  << *********** Enter a topic name: This is the topic that will contain the preprocessed output i.e. iot-preprocess 
   'identifier' : 'TML solution',  
   'inputfile' : '/rawdata/?',  # <<< ***** replace ?  to input file to read. NOTE this data file should JSON messages per line and stored in the HOST folder mapped to /rawdata folder 
   'start_date': datetime (2024, 6, 29),
