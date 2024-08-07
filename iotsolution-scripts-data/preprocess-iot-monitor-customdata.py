@@ -169,8 +169,10 @@ latlong=lat:long'
      streamstojoin="" 
      identifier = "IoT device performance and failures"
 
+     preprocesslogic='MIN,MAX,COUNT,VARIANCE,OUTLIERS,ANOMPROB'
+
      # if dataage - use:dataage_utcoffset_timetype
-     preprocesslogic='anomprob,trend,avg'
+     #preprocesslogic='anomprob,trend,avg'
 
      pathtotmlattrs='oem=n/a,lat=n/a,long=n/a,location=n/a,identifier=n/a'          
      try:
